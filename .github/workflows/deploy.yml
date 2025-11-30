@@ -1,0 +1,39 @@
+name: Deploy Automático EC2
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout do código
+        uses: actions/checkout@v4
+
+      - name: Deploy via SSH na EC2
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_PRIVATE_KEY }}
+
+          script: |
+            cd projeto-mentoria
+
+            echo "---- Puxando atualizações do Git ----"
+            git pull
+
+            echo "---- Parando container atual (se existir) ----"
+            docker stop projeto-mentoria || true
+            docker rm projeto-mentoria || true
+
+            echo "---- Buildando nova imagem ----"
+            docker build -t projeto-mentoria .
+
+            echo "---- Subindo container novo ----"
+            docker run -d -p 8080:80 --name projeto-mentoria projeto-mentoria
+
+            echo "---- Deploy finalizado ----"
