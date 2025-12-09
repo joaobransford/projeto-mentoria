@@ -1,6 +1,6 @@
 # Pipeline de Deploy Aplicação Web Estática:
 
-## Visão Geral e Objetivo
+## Visão Geral
 
 O objetivo principal foi aplicar conhecimentos básicos de DevOps para automatizar o deploy de uma aplicação web estática contida em um Container Docker para uma VM no AWS EC2, orquestrado pela Action appleboy/ssh-action@master.
 
